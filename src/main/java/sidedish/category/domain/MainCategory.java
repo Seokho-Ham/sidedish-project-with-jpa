@@ -1,6 +1,5 @@
 package sidedish.category.domain;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,15 +27,7 @@ public class MainCategory {
         this.title = title;
     }
 
-    public void addSubCategory(SubCategory subCategory) {
+    public void setSubCategory(SubCategory subCategory) {
         subCategories.add(subCategory);
-    }
-    @Override
-    public String toString() {
-        return "MainCategory{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", subCategories=" + subCategories +
-                '}';
     }
 }

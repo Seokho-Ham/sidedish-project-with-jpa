@@ -8,8 +8,10 @@ import sidedish.category.domain.MainCategory;
 import sidedish.category.domain.MainCategoryRepository;
 import sidedish.category.domain.SubCategory;
 import sidedish.category.domain.SubCategoryRepository;
-import sidedish.category.presentation.dto.MainCategoryDto;
-import sidedish.category.presentation.dto.SubCategoryDto;
+import sidedish.category.presentation.dto.RequestMainCategoryDto;
+import sidedish.category.presentation.dto.RequestSubCategoryDto;
+import sidedish.category.presentation.dto.ResponseMainCategoryDto;
+import sidedish.category.presentation.dto.ResponseSubCategoryDto;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -31,8 +33,8 @@ public class CategoryServiceTest {
     @DisplayName("메인 카테고리를 저장한다.")
     void saveMainCategory() {
 
-        MainCategoryDto.Request requestDto = new MainCategoryDto.Request("메인 요리");
-        MainCategory mainCategory1 = service.addMainCategory(requestDto);
+        RequestMainCategoryDto requestDto = new RequestMainCategoryDto("메인 요리");
+        ResponseMainCategoryDto mainCategory1 = service.addMainCategory(requestDto);
 
         MainCategory mainCategory = mainCategoryRepository.findById(mainCategory1.getId()).orElseThrow();
 
@@ -44,10 +46,10 @@ public class CategoryServiceTest {
     @DisplayName("서브 카테고리를 저장한다.")
     void saveSideCategory() {
 
-        MainCategoryDto.Request mainCategoryDto = new MainCategoryDto.Request("메인 요리");
-        MainCategory mainCategory = service.addMainCategory(mainCategoryDto);
+        RequestMainCategoryDto mainCategoryDto = new RequestMainCategoryDto("메인 요리");
+        ResponseMainCategoryDto mainCategory = service.addMainCategory(mainCategoryDto);
 
-        SubCategoryDto.Request requestDto = new SubCategoryDto.Request(mainCategory.getId(), "육류");
+        RequestSubCategoryDto requestDto = new RequestSubCategoryDto(mainCategory.getId(), "육류");
         service.addSubCategory(requestDto);
 
         SubCategory subCategory = subCategoryRepository.findById(1L).orElseThrow();
@@ -59,15 +61,15 @@ public class CategoryServiceTest {
     @Test
     @DisplayName("전체 메인 카테고리를 조회한다.")
     void searchMainCategory() {
-        MainCategoryDto.Request mainCategoryDto1 = new MainCategoryDto.Request("메인 요리");
-        MainCategoryDto.Request mainCategoryDto2 = new MainCategoryDto.Request("국/찌개");
-        MainCategoryDto.Request mainCategoryDto3 = new MainCategoryDto.Request("반찬");
+        RequestMainCategoryDto mainCategoryDto1 = new RequestMainCategoryDto("메인 요리");
+        RequestMainCategoryDto mainCategoryDto2 = new RequestMainCategoryDto("국/찌개");
+        RequestMainCategoryDto mainCategoryDto3 = new RequestMainCategoryDto("반찬");
 
         service.addMainCategory(mainCategoryDto1);
         service.addMainCategory(mainCategoryDto2);
         service.addMainCategory(mainCategoryDto3);
 
-        List<MainCategory> result = service.findAllMainCategories();
+        List<ResponseMainCategoryDto> result = service.findAllMainCategories();
 
         assertThat(result.size()).isEqualTo(3);
         assertThat(result.get(0).getTitle()).isEqualTo("메인 요리");
@@ -78,17 +80,17 @@ public class CategoryServiceTest {
     @Test
     @DisplayName("메인 카테고리를 조회한 뒤, 서브 카테고리에 접근할때 데이터를 가져올 수 있어야 한다.")
     void getSubCategoriesFromMain() {
-        MainCategoryDto.Request mainCategoryDto1 = new MainCategoryDto.Request("메인 요리");
-        MainCategory mainCategory1 = service.addMainCategory(mainCategoryDto1);
+        RequestMainCategoryDto mainCategoryDto1 = new RequestMainCategoryDto("메인 요리");
+        ResponseMainCategoryDto mainCategory1 = service.addMainCategory(mainCategoryDto1);
 
-        SubCategoryDto.Request dto1 = new SubCategoryDto.Request(mainCategory1.getId(), "육류");
-        SubCategoryDto.Request dto2 = new SubCategoryDto.Request(mainCategory1.getId(), "해산물");
+        RequestSubCategoryDto dto1 = new RequestSubCategoryDto(mainCategory1.getId(), "육류");
+        RequestSubCategoryDto dto2 = new RequestSubCategoryDto(mainCategory1.getId(), "해산물");
 
         service.addSubCategory(dto1);
         service.addSubCategory(dto2);
 
-        MainCategory mainCategory = service.findMainCategory(mainCategory1.getId());
-        List<SubCategory> subCategories = mainCategory.getSubCategories();
+        ResponseMainCategoryDto mainCategoryDto = service.findMainCategory(mainCategory1.getId());
+        List<ResponseSubCategoryDto> subCategories = mainCategoryDto.getSubCategories();
 
         assertThat(subCategories.size()).isEqualTo(2);
         assertThat(subCategories.get(0).getTitle()).isEqualTo("육류");

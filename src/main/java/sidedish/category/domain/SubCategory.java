@@ -18,7 +18,7 @@ public class SubCategory {
 
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "main_category_id")
     private MainCategory mainCategory;
 
@@ -26,8 +26,8 @@ public class SubCategory {
         this.title = title;
     }
 
-    public void changeMainCategory(MainCategory mainCategory) {
+    public void addMainCategory(MainCategory mainCategory) {
         this.mainCategory = mainCategory;
-        mainCategory.addSubCategory(this);
+        mainCategory.setSubCategory(this);
     }
 }
