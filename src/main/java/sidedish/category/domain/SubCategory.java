@@ -22,8 +22,12 @@ public class SubCategory {
     @JoinColumn(name = "main_category_id")
     private MainCategory mainCategory;
 
-    public SubCategory(String title, MainCategory mainCategory) {
+    public SubCategory(String title) {
         this.title = title;
+    }
+
+    public void changeMainCategory(MainCategory mainCategory) {
         this.mainCategory = mainCategory;
+        mainCategory.addSubCategory(this);
     }
 }

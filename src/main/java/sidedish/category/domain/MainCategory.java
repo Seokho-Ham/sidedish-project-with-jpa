@@ -27,4 +27,16 @@ public class MainCategory {
     public MainCategory(String title) {
         this.title = title;
     }
+
+    public void addSubCategory(SubCategory subCategory) {
+        subCategories.add(subCategory);
+    }
+    @Override
+    public String toString() {
+        return "MainCategory{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", subCategories=" + subCategories +
+                '}';
+    }
 }

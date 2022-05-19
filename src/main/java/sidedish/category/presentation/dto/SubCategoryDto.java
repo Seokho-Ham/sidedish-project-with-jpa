@@ -14,8 +14,8 @@ public class SubCategoryDto {
         private final Long parentId;
         private final String title;
 
-        public SubCategory toEntity(MainCategory mainCategory) {
-            return new SubCategory(title, mainCategory);
+        public SubCategory toEntity() {
+            return new SubCategory(title);
         }
     }
 

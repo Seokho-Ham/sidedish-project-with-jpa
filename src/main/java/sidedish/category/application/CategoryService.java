@@ -1,5 +1,7 @@
 package sidedish.category.application;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import sidedish.category.domain.MainCategory;
 import sidedish.category.domain.MainCategoryRepository;
@@ -15,14 +17,15 @@ public class CategoryService {
 
     private final MainCategoryRepository mainCategoryRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
 
     public CategoryService(MainCategoryRepository mainCategoryRepository, SubCategoryRepository subCategoryRepository) {
         this.mainCategoryRepository = mainCategoryRepository;
         this.subCategoryRepository = subCategoryRepository;
     }
 
-    public void addMainCategory(MainCategoryDto.Request dto) {
-        mainCategoryRepository.save(dto.toEntity());
+    public MainCategory addMainCategory(MainCategoryDto.Request dto) {
+        return mainCategoryRepository.save(dto.toEntity());
     }
 
     public MainCategory findMainCategory(Long mainCategoryId) {
@@ -33,9 +36,11 @@ public class CategoryService {
         return mainCategoryRepository.findAll();
     }
 
-    public void addSubCategory(SubCategoryDto.Request dto) {
+    public SubCategory addSubCategory(SubCategoryDto.Request dto) {
         MainCategory mainCategory = mainCategoryRepository.findById(dto.getParentId()).orElseThrow();
-        subCategoryRepository.save(dto.toEntity(mainCategory));
+        SubCategory subCategory = dto.toEntity();
+        subCategory.changeMainCategory(mainCategory);
+        return subCategoryRepository.save(subCategory);
     }
 
     public SubCategory findSubCategory(Long subCategoryId) {
